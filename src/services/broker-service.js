@@ -1,4 +1,4 @@
-const { Broker } = require("@models");
+const { Broker, Property } = require("@models");
 const userService = require("./user-service");
 
 module.exports = {
@@ -19,10 +19,12 @@ module.exports = {
         properties: broker.properties,
       };
       const newBroker = new Broker(brokerData);
-      return await newBroker.save();
+      await newBroker.save();
+
+      return { message: "Broker successfully created" };
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
   async registerUserAsBroker(userId) {
@@ -37,10 +39,12 @@ module.exports = {
         properties: [],
       };
       const newBroker = new Broker(brokerData);
-      return await newBroker.save();
+      await newBroker.save();
+
+      return { message: "User successfully registered as broker" };
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
   async deleteBroker(id) {
@@ -49,18 +53,19 @@ module.exports = {
       /*
       TODO: Remove the broker from a property using a background job
       */
-      return "Profile Successfully Deleted";
+      return { message: "Profile Successfully Deleted" };
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
   async getBrokerById(id) {
     try {
-      return await Broker.findById(id);
+      const broker = await Broker.findById(id);
+      return { broker };
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
   async getBrokers(
@@ -80,38 +85,56 @@ module.exports = {
           },
         };
       }
-      return await Broker.find(query).skip(skip).limit(limit).sort(sort);
+      const brokers = await Broker.find(query)
+        .skip(skip)
+        .limit(limit)
+        .sort(sort);
+      return { brokers };
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
-  async addPropertyToBroker(id, property) {
+  async addPropertyToBroker(id, { property }) {
     try {
       const broker = await Broker.findById(id);
       if (!broker) {
         return { error: { message: "Broker not found" } };
       }
       broker.properties.push(property);
-      return await broker.save();
+
+      const { _id } = await broker.save();
+
+      await Property.findOneAndUpdate(
+        { _id: property },
+        { $addToSet: { brokers: _id } }
+      );
+
+      return { message: "Property successfully added to broker" };
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
-  async removePropertyFromBroker(id, property) {
+  async removePropertyFromBroker(id, { property }) {
     try {
       const broker = await Broker.findById(id);
       if (!broker) {
         return { error: { message: "Broker not found" } };
       }
       broker.properties = broker.properties.filter(
-        (brokerProperty) => brokerProperty._id !== property._id
+        (brokerProperty) => brokerProperty._id !== property
       );
-      return await broker.save();
+      const { _id } = await broker.save();
+
+      await Property.findOneAndUpdate(
+        { _id: property },
+        { $pull: { brokers: _id } }
+      );
+      return { message: "Property successfully added to broker" };
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
 };

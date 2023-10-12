@@ -6,7 +6,7 @@ module.exports = {
       return await Property.create(property);
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
   async updateProperty(id, property) {
@@ -14,7 +14,7 @@ module.exports = {
       return await Property.findByIdAndUpdate(id, property, { new: true });
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
   async deleteProperty(id) {
@@ -23,7 +23,7 @@ module.exports = {
       return "Successfully Deleted";
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
   async getPropertyById(id) {
@@ -31,7 +31,7 @@ module.exports = {
       return await Property.findById(id);
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
   async getProperties(
@@ -54,7 +54,7 @@ module.exports = {
       return await Property.find(query).skip(skip).limit(limit).sort(sort);
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
 };

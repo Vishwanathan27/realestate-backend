@@ -45,7 +45,7 @@ module.exports = {
       return await User.find(query).skip(skip).limit(limit).sort(sort);
     } catch (error) {
       console.log(error);
-      return error;
+      return { error };
     }
   },
 };
