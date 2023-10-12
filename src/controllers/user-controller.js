@@ -1,7 +1,7 @@
 const { userService } = require("@services");
 const { dataConfig } = require("@config");
 
-const register = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const { password, ...otherUserData } = req.body;
     const hashedPassword = await userService.hashPassword(password);
@@ -102,7 +102,7 @@ const deleteUser = async (req, res) => {
 };
 
 module.exports = {
-  register,
+  registerUser,
   updateUser,
   deleteUser,
   getAllUsers,

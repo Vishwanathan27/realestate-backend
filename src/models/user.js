@@ -29,13 +29,17 @@ const UserSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    roles: {
+      type: String,
+      enum: ["user", "admin", "broker", "landlord"],
+    },
     profilePicture: {
-      type: String, // This could be a URL if you're storing images on AWS S3 or another service
-      default: null,
+      type: String,
+      default: "",
     },
     createdAt: {
-      type: Number, // Using Number type for Unix timestamp
-      default: () => moment().valueOf(), // Returns current time as Unix timestamp
+      type: Number,
+      default: () => moment().valueOf(),
     },
     updatedAt: {
       type: Number,
