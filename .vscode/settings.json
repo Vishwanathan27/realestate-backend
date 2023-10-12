@@ -1,0 +1,12 @@
+{
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "eslint.autoFixOnSave": true,
+    "eslint.validate": [
+      "javascript"
+    ],
+    "cSpell.words": [
+      "realestate"
+    ]
+  }
