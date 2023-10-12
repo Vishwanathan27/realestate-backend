@@ -1,0 +1,50 @@
+{
+  "name": "realestate-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vishwanathan27/realestate-backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1472.0",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^6.9.0",
+    "helmet": "^7.0.0",
+    "jimp": "^0.22.10",
+    "jsonwebtoken": "^9.0.1",
+    "module-alias": "^2.2.3",
+    "moment": "^2.29.4",
+    "mongodb": "^5.5.0",
+    "mongoose": "^7.2.1",
+    "swagger-jsdoc": "^6.0.0",
+    "swagger-ui-express": "^5.0.0",
+    "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "@types/module-alias": "^2.0.1",
+    "eslint": "^8.41.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "nodemon": "^2.0.22"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@config": "src/config/index.js",
+    "@controllers": "src/controllers/index.js",
+    "@services": "src/services/index.js",
+    "@models": "src/models/index.js",
+    "@auth": "src/middlewares/auth.js"
+  }
+}
