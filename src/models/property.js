@@ -10,10 +10,7 @@ const propertySchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    location: {
-      type: String,
-      required: true,
-    },
+    location: { type: "Object", default: {} },
     createdAt: {
       type: Number,
       default: () => moment().valueOf(),

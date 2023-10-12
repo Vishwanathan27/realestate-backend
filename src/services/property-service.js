@@ -1,6 +1,22 @@
 const { Property } = require("@models");
 
 module.exports = {
+  async createProperty(property) {
+    try {
+      return await Property.create(property);
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+  async updateProperty(id, property) {
+    try {
+      return await Property.findByIdAndUpdate(id, property, { new: true });
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
   async getProperties(
     page = 1,
     itemsPerPage = 10,
