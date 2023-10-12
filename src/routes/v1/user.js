@@ -4,7 +4,6 @@ const { userController } = require("@controllers");
 
 const router = express.Router();
 
-router.get("/health", userController.health);
 router.get("/", userController.getAllUsers); // Get all posts
 router.get("/:id", userController.getUserById); // Get a specific post by its ID
 router.put("/:id", userController.updateUser); // Update a post by its ID
