@@ -1,70 +1,70 @@
-const { Broker, Property } = require("@models");
+const { Landlord, Property } = require("@models");
 const userService = require("./user-service");
 
 module.exports = {
-  // Create a new broker
-  async createBroker(broker) {
+  // Create a new landlord
+  async createLandlord(landlord) {
     try {
-      const { password, ...otherUserData } = broker;
+      const { password, ...otherUserData } = landlord;
       const hashedPassword = await userService.hashPassword(password);
       const user = await userService.register({
         password: hashedPassword,
-        roles: ["user", "broker"],
+        roles: ["user", "landlord"],
         ...otherUserData,
       });
 
-      const brokerData = {
+      const landlordData = {
         user: user._id,
-        properties: broker.properties,
+        properties: landlord.properties,
       };
-      const newBroker = new Broker(brokerData);
-      await newBroker.save();
+      const newLandlord = new Landlord(landlordData);
+      await newLandlord.save();
 
-      if (broker.properties.length > 0) {
-        const promises = broker.properties.map(async (property) => {
+      if (landlord.properties.length > 0) {
+        const promises = landlord.properties.map(async (property) => {
           await Property.findOneAndUpdate(
             { _id: property },
-            { $addToSet: { landlords: newBroker._id } }
+            { $addToSet: { landlords: newLandlord._id } }
           );
         });
         await Promise.all(promises);
       }
 
-      return { message: "Broker successfully created" };
+      return { message: "Landlord successfully created" };
     } catch (error) {
       console.error(error);
       return { error };
     }
   },
 
-  // Register a user as a broker
-  async registerUserAsBroker(userId) {
+  // Register a user as a landlord
+  async registerUserAsLandlord(userId) {
     try {
       const user = await userService.getUserById(userId);
       if (!user) {
         return { error: { message: "User not found" } };
       }
 
-      const brokerData = {
+      const landlordData = {
         user: userId,
         properties: [],
       };
-      const newBroker = new Broker(brokerData);
-      await newBroker.save();
+      const newLandlord = new Landlord(landlordData);
+      await newLandlord.save();
 
-      return { message: "User successfully registered as broker" };
+      return { message: "User successfully registered as landlord" };
     } catch (error) {
       console.error(error);
       return { error };
     }
   },
 
-  // Delete a broker
-  async deleteBroker(id) {
+  // Delete a landlord
+  async deleteLandlord(id) {
     try {
-      await Broker.findByIdAndRemove(id);
+      await Landlord.findByIdAndRemove(id);
       /*
-      TODO: Remove the broker from a property using a background job
+      TODO: Remove the landlord from a property using a background job
       */
       return { message: "Profile Successfully Deleted" };
     } catch (error) {
@@ -73,19 +73,19 @@ module.exports = {
     }
   },
 
-  // Get a broker by ID
-  async getBrokerById(id) {
+  // Get a landlord by ID
+  async getLandlordById(id) {
     try {
-      const broker = await Broker.findById(id);
-      return { broker };
+      const landlord = await Landlord.findById(id);
+      return { landlord };
     } catch (error) {
       console.error(error);
       return { error };
     }
   },
 
-  // Get a list of brokers
-  async getBrokers(
+  // Get a list of landlords
+  async getLandlords(
     page = 1,
     itemsPerPage = 10,
     searchTerm = "",
@@ -95,59 +95,59 @@ module.exports = {
       const skip = (page - 1) * itemsPerPage;
       const limit = itemsPerPage;
       const query = searchTerm ? { $text: { $search: searchTerm } } : {};
-      const brokers = await Broker.find(query)
+      const landlords = await Landlord.find(query)
         .skip(skip)
         .limit(limit)
         .sort(sort);
-      return { brokers };
+      return { landlords };
     } catch (error) {
       console.error(error);
       return { error };
     }
   },
 
-  // Add a property to a broker
-  async addPropertyToBroker(broker, { property }) {
+  // Add a property to a landlord
+  async addPropertyToLandlord(landlord, { property }) {
     try {
       const update = {
         $push: { properties: property },
       };
 
-      await Broker.findByIdAndUpdate(broker._id, update, {
+      await Landlord.findByIdAndUpdate(landlord._id, update, {
         new: true,
       });
 
       await Property.findOneAndUpdate(
         { _id: property },
-        { $addToSet: { brokers: broker._id } }
+        { $addToSet: { landlords: landlord._id } }
       );
 
-      return { message: "Property successfully added to broker" };
+      return { message: "Property successfully added to landlord" };
     } catch (error) {
       console.error(error);
       return { error };
     }
   },
 
-  // Remove a property from a broker
-  async removePropertyFromBroker(broker, { property }) {
+  // Remove a property from a landlord
+  async removePropertyFromLandlord(landlord, { property }) {
     try {
-      const updatedProperties = broker.properties
+      const updatedProperties = landlord.properties
         .filter((e) => e?._id?.toString() !== property)
         .map((e) => e._id.toString());
 
-      const updatedBroker = { properties: updatedProperties };
+      const updatedLandlord = { properties: updatedProperties };
 
-      await Broker.findByIdAndUpdate(broker._id, updatedBroker, {
+      await Landlord.findByIdAndUpdate(landlord._id, updatedLandlord, {
         new: true,
       });
 
       await Property.findOneAndUpdate(
         { _id: property },
-        { $pull: { brokers: broker._id } }
+        { $pull: { landlords: landlord._id } }
       );
 
-      return { message: "Property successfully removed from broker" };
+      return { message: "Property successfully removed from landlord" };
     } catch (error) {
       console.error(error);
       return { error };

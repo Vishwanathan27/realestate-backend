@@ -4,6 +4,7 @@ const miscService = require("./misc-service");
 const userService = require("./user-service");
 const propertyService = require("./property-service");
 const brokerService = require("./broker-service");
+const landlordService = require("./landlord-service");
 
 module.exports = {
   mongoService,
@@ -12,4 +13,5 @@ module.exports = {
   userService,
   propertyService,
   brokerService,
+  landlordService,
 };

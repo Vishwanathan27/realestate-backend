@@ -3,6 +3,7 @@ const authController = require("./auth-controller");
 const userController = require("./user-controller");
 const propertyController = require("./property-controller");
 const brokerController = require("./broker-controller");
+const landlordController = require("./landlord-controller");
 
 module.exports = {
   miscController,
@@ -10,4 +11,5 @@ module.exports = {
   authController,
   propertyController,
   brokerController,
+  landlordController,
 };

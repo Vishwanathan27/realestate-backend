@@ -6,6 +6,7 @@ const authRouter = require("./auth");
 const userRouter = require("./user");
 const propertyRouter = require("./property");
 const brokerRouter = require("./broker");
+const landlordRouter = require("./landlord");
 
 const publicRouter = express.Router();
 const privateRouter = express.Router();
@@ -15,6 +16,7 @@ publicRouter.use("/misc", miscRouter);
 publicRouter.use("/auth", authRouter);
 publicRouter.use("/user", userRouter);
 publicRouter.use("/broker", brokerRouter);
+publicRouter.use("/landlord", landlordRouter);
 
 // Private routes
 privateRouter.use("/properties", propertyRouter);
