@@ -26,7 +26,6 @@ module.exports = {
     }
   },
   async registerUserAsBroker(userId) {
-    console.log("userId :", userId);
     try {
       const user = await userService.getUserById(userId);
       if (!user) {
@@ -47,6 +46,9 @@ module.exports = {
   async deleteBroker(id) {
     try {
       await Broker.findByIdAndRemove(id);
+      /*
+      TODO: Remove the broker from a property using a background job
+      */
       return "Profile Successfully Deleted";
     } catch (error) {
       console.log(error);
@@ -79,6 +81,34 @@ module.exports = {
         };
       }
       return await Broker.find(query).skip(skip).limit(limit).sort(sort);
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+  async addPropertyToBroker(id, property) {
+    try {
+      const broker = await Broker.findById(id);
+      if (!broker) {
+        return { error: { message: "Broker not found" } };
+      }
+      broker.properties.push(property);
+      return await broker.save();
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
+  async removePropertyFromBroker(id, property) {
+    try {
+      const broker = await Broker.findById(id);
+      if (!broker) {
+        return { error: { message: "Broker not found" } };
+      }
+      broker.properties = broker.properties.filter(
+        (brokerProperty) => brokerProperty._id !== property._id
+      );
+      return await broker.save();
     } catch (error) {
       console.log(error);
       return error;

@@ -68,6 +68,44 @@ const getBrokerById = async (req, res) => {
   }
 };
 
+const addPropertyToBroker = async (req, res) => {
+  try {
+    const {
+      params: { id },
+      body,
+    } = req;
+
+    const broker = await brokerService.addPropertyToBroker(id, body);
+
+    res.status(200).send({ success: true, broker });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+};
+
+const removePropertyFromBroker = async (req, res) => {
+  try {
+    const {
+      params: { id },
+      body,
+    } = req;
+
+    const broker = await brokerService.removePropertyFromBroker(id, body);
+
+    res.status(200).send({ success: true, broker });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+};
+
 const getAllBrokers = async (req, res) => {
   try {
     const { query } = req;
@@ -94,4 +132,6 @@ module.exports = {
   registerUserAsBroker,
   deleteBroker,
   createBroker,
+  addPropertyToBroker,
+  removePropertyFromBroker,
 };
