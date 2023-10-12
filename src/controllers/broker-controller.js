@@ -2,108 +2,144 @@ const { brokerService } = require("@services");
 const { dataConfig } = require("@config");
 
 const registerUserAsBroker = async (req, res) => {
-  try {
-    const {
-      params: { userId },
-    } = req;
+  const {
+    params: { userId },
+  } = req;
 
-    const broker = await brokerService.registerUserAsBroker(userId);
+  const { message, error } = await brokerService.registerUserAsBroker(userId);
 
-    res.status(201).send({ success: true, broker });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  if (error) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+
+  return res.status(201).send({ success: true, message });
 };
 
 const createBroker = async (req, res) => {
-  try {
-    const { body } = req;
-    const broker = await brokerService.createBroker(body);
+  const { body } = req;
+  const { message, error } = await brokerService.createBroker(body);
 
-    res.status(201).send({ success: true, broker });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  if (error) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+
+  return res.status(201).send({ success: true, message });
 };
 
 const deleteBroker = async (req, res) => {
-  try {
-    const {
-      params: { id },
-    } = req;
-    const broker = await brokerService.deleteBroker(id);
+  const {
+    params: { id },
+  } = req;
+  const { message, error } = await brokerService.deleteBroker(id);
 
-    res.status(200).send({ success: true, broker });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  if (error) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+
+  return res.status(200).send({ success: true, message });
 };
 
 const getBrokerById = async (req, res) => {
-  try {
-    const {
-      params: { id },
-    } = req;
-    const broker = await brokerService.getBrokerById(id);
+  const {
+    params: { id },
+  } = req;
+  const { broker, error } = await brokerService.getBrokerById(id);
 
-    res.status(200).send({ success: true, broker });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  if (error) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+
+  if (!broker) {
+    return res
+      .status(404)
+      .send({ success: false, message: "Broker not found" });
+  }
+
+  return res.status(200).send({ success: true, broker });
 };
 
 const addPropertyToBroker = async (req, res) => {
-  try {
-    const {
-      params: { id },
-      body,
-    } = req;
+  const {
+    params: { id },
+    body,
+  } = req;
 
-    const broker = await brokerService.addPropertyToBroker(id, body);
+  const { broker, error: brokerError } = await brokerService.getBrokerById(id);
 
-    res.status(200).send({ success: true, broker });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  if (brokerError) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+
+  if (!broker) {
+    return res
+      .status(404)
+      .send({ success: false, message: "Broker not found" });
+  }
+
+  const { message, error } = await brokerService.addPropertyToBroker(
+    broker,
+    body
+  );
+
+  if (error) {
+    return res.status(500).send({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+
+  return res.status(200).send({ success: true, message });
 };
 
 const removePropertyFromBroker = async (req, res) => {
-  try {
-    const {
-      params: { id },
-      body,
-    } = req;
+  const {
+    params: { id },
+    body,
+  } = req;
 
-    const broker = await brokerService.removePropertyFromBroker(id, body);
+  const { broker, error: brokerError } = await brokerService.getBrokerById(id);
 
-    res.status(200).send({ success: true, broker });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  if (brokerError) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+
+  if (!broker) {
+    return res
+      .status(404)
+      .send({ success: false, message: "Broker not found" });
+  }
+
+  const { message, error } = await brokerService.removePropertyFromBroker(
+    broker,
+    body
+  );
+
+  if (error) {
+    return res.status(500).send({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+
+  return res.status(200).send({ success: true, message });
 };
 
 const getAllBrokers = async (req, res) => {
