@@ -43,7 +43,6 @@ const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
     const user = await userService.getUserById(id);
-    console.log("user :", user);
     delete user.password;
     if (!user) {
       return res
