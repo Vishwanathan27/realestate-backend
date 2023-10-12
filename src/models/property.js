@@ -39,5 +39,32 @@ propertySchema.pre("save", function (next) {
   next();
 });
 
+// Apply population to 'userId' and 'properties' when querying
+propertySchema.pre("find", function (next) {
+  this.populate({
+    path: "user",
+    select: "firstName lastName profilePicture email username",
+  });
+
+  this.populate({
+    path: "properties",
+    select: "name description location",
+  });
+  next();
+});
+
+propertySchema.pre("findOne", function (next) {
+  this.populate({
+    path: "user",
+    select: "firstName lastName profilePicture email username",
+  });
+
+  this.populate({
+    path: "properties",
+    select: "name description location",
+  });
+  next();
+});
+
 const Property = mongoose.model("Property", propertySchema);
 module.exports = Property;

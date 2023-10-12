@@ -24,7 +24,7 @@ module.exports = {
         const promises = landlord.properties.map(async (property) => {
           await Property.findOneAndUpdate(
             { _id: property },
-            { $addToSet: { landlords: newLandlord._id } }
+            { $addToSet: { landlords: user._id } }
           );
         });
         await Promise.all(promises);
@@ -119,7 +119,7 @@ module.exports = {
 
       await Property.findOneAndUpdate(
         { _id: property },
-        { $addToSet: { landlords: landlord._id } }
+        { $addToSet: { landlords: landlord.user._id } }
       );
 
       return { message: "Property successfully added to landlord" };
@@ -144,7 +144,7 @@ module.exports = {
 
       await Property.findOneAndUpdate(
         { _id: property },
-        { $pull: { landlords: landlord._id } }
+        { $pull: { landlords: landlord.user._id } }
       );
 
       return { message: "Property successfully removed from landlord" };

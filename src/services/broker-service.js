@@ -24,7 +24,7 @@ module.exports = {
         const promises = broker.properties.map(async (property) => {
           await Property.findOneAndUpdate(
             { _id: property },
-            { $addToSet: { landlords: newBroker._id } }
+            { $addToSet: { landlords: user._id } }
           );
         });
         await Promise.all(promises);
@@ -119,7 +119,7 @@ module.exports = {
 
       await Property.findOneAndUpdate(
         { _id: property },
-        { $addToSet: { brokers: broker._id } }
+        { $addToSet: { brokers: broker.user._id } }
       );
 
       return { message: "Property successfully added to broker" };
@@ -144,7 +144,7 @@ module.exports = {
 
       await Property.findOneAndUpdate(
         { _id: property },
-        { $pull: { brokers: broker._id } }
+        { $pull: { brokers: broker.user._id } }
       );
 
       return { message: "Property successfully removed from broker" };
