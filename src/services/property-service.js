@@ -26,6 +26,14 @@ module.exports = {
       return error;
     }
   },
+  async getPropertyById(id) {
+    try {
+      return await Property.findById(id);
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
   async getProperties(
     page = 1,
     itemsPerPage = 10,
