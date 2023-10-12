@@ -17,6 +17,15 @@ module.exports = {
       return error;
     }
   },
+  async deleteProperty(id) {
+    try {
+      await Property.findByIdAndRemove(id);
+      return "Successfully Deleted";
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  },
   async getProperties(
     page = 1,
     itemsPerPage = 10,
