@@ -9,6 +9,7 @@ module.exports = {
       // Registering the broker as user first
       const user = await userService.register({
         password: hashedPassword,
+        roles: ["user", "broker"],
         ...otherUserData,
       });
 
