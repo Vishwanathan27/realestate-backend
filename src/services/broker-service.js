@@ -1,4 +1,4 @@
-const { Broker, Property } = require("@models");
+const { Broker, Property, User } = require("@models");
 const userService = require("./user-service");
 
 module.exports = {
@@ -51,6 +51,10 @@ module.exports = {
       };
       const newBroker = new Broker(brokerData);
       await newBroker.save();
+
+      await User.findByIdAndUpdate(userId, {
+        $addToSet: { roles: "broker" },
+      });
 
       return { message: "User successfully registered as broker" };
     } catch (error) {

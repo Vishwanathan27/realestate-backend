@@ -1,4 +1,4 @@
-const { Landlord, Property } = require("@models");
+const { Landlord, Property, User } = require("@models");
 const userService = require("./user-service");
 
 module.exports = {
@@ -51,6 +51,10 @@ module.exports = {
       };
       const newLandlord = new Landlord(landlordData);
       await newLandlord.save();
+
+      await User.findByIdAndUpdate(userId, {
+        $addToSet: { roles: "landlord" },
+      });
 
       return { message: "User successfully registered as landlord" };
     } catch (error) {
