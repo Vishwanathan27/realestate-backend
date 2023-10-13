@@ -48,20 +48,20 @@ propertySchema.pre("find", function (next) {
 
   this.populate({
     path: "landlords",
-    select: "name description location",
+    select: "firstName lastName profilePicture email username",
   });
   next();
 });
 
 propertySchema.pre("findOne", function (next) {
   this.populate({
-    path: "user",
+    path: "brokers",
     select: "firstName lastName profilePicture email username",
   });
 
   this.populate({
-    path: "properties",
-    select: "name description location",
+    path: "landlords",
+    select: "firstName lastName profilePicture email username",
   });
   next();
 });
