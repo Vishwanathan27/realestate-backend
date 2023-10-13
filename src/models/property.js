@@ -10,7 +10,10 @@ const propertySchema = new mongoose.Schema(
     description: {
       type: String,
     },
-    location: { type: "Object", default: {} },
+    location: {
+      type: "Object",
+      default: {},
+    },
     createdAt: {
       type: Number,
       default: () => moment().valueOf(),
@@ -18,16 +21,24 @@ const propertySchema = new mongoose.Schema(
     updatedAt: {
       type: Number,
     },
+    units: [
+      {
+        squareFeet: Number,
+        floor: Number,
+        rentalRate: Number,
+        plotNumber: Number,
+      },
+    ],
     brokers: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Broker",
+        ref: "User",
       },
     ],
     landlords: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Landlord",
+        ref: "User",
       },
     ],
   },

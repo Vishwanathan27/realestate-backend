@@ -1,96 +1,120 @@
+/* eslint-disable operator-linebreak */
 const { propertyService } = require("@services");
 const { dataConfig } = require("@config");
 
 const createProperty = async (req, res) => {
-  try {
-    const { body } = req;
-    const property = await propertyService.createProperty(body);
-
-    res.status(201).send({ success: true, property });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  const { body } = req;
+  const { message, error } = await propertyService.createProperty(body);
+  if (error) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+  return res.status(201).send({ success: true, message });
 };
 
 const updateProperty = async (req, res) => {
-  try {
-    const {
-      body,
-      params: { id },
-    } = req;
-    const property = await propertyService.updateProperty(id, body);
-
-    res.status(200).send({ success: true, property });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  const {
+    body,
+    params: { id },
+  } = req;
+  const { message, error } = await propertyService.updateProperty(id, body);
+  if (error) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+  return res.status(200).send({ success: true, message });
 };
 
 const deleteProperty = async (req, res) => {
-  try {
-    const {
-      params: { id },
-    } = req;
-    const property = await propertyService.deleteProperty(id);
-
-    res.status(200).send({ success: true, property });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  const {
+    params: { id },
+  } = req;
+  const { message, error } = await propertyService.deleteProperty(id);
+  if (error) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+  return res.status(200).send({ success: true, message });
 };
 
 const getPropertyById = async (req, res) => {
-  try {
-    const {
-      params: { id },
-    } = req;
-    const property = await propertyService.getPropertyById(id);
-
-    res.status(200).send({ success: true, property });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  const {
+    params: { id },
+  } = req;
+  const { property, error } = await propertyService.getPropertyById(id);
+  if (error) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+  if (!property) {
+    return res.status(404).send({
+      success: false,
+      error: "Property not found",
+    });
+  }
+  return res.status(200).send({ success: true, property });
 };
 
 const getAllProperties = async (req, res) => {
-  try {
-    const { query } = req;
-    const page = parseInt(query.page) || dataConfig.page;
-    const limit = parseInt(query.limit) || dataConfig.limit;
-    const sort = query.sort || dataConfig.sort;
-    const search = query.search || "";
+  const { query } = req;
+  const page = parseInt(query.page) || dataConfig.page;
+  const limit = parseInt(query.limit) || dataConfig.limit;
+  const sort = query.sort || dataConfig.sort;
+  const search = query.search || "";
 
-    const properties = await propertyService.getProperties(
-      page,
-      limit,
-      search,
-      sort
-    );
+  const { properties, error } = await propertyService.getProperties(
+    page,
+    limit,
+    search,
+    sort
+  );
 
-    res.status(200).send({ success: true, properties });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send({
+  if (error) {
+    return res.status(500).send({
       success: false,
       error: "Internal Server Error",
     });
   }
+
+  return res.status(200).send({ success: true, properties });
+};
+
+const provideUnitsToUser = async (req, res) => {
+  const {
+    body: { sqFt },
+    params: { id },
+  } = req;
+
+  const { property, error: propertyError } =
+    await propertyService.getPropertyById(id);
+
+  if (propertyError) {
+    return res.status(500).send({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+
+  const { selectedUnits, error } = await propertyService.provideUnitsToUser(
+    property,
+    sqFt
+  );
+
+  if (error) {
+    return res.status(500).send({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+  return res.status(200).send({ success: true, selectedUnits });
 };
 
 module.exports = {
@@ -99,4 +123,5 @@ module.exports = {
   createProperty,
   updateProperty,
   deleteProperty,
+  provideUnitsToUser,
 };
