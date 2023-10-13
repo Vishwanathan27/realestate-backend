@@ -3,14 +3,31 @@ const moment = require("moment");
 
 const propertySchema = new mongoose.Schema(
   {
-    user: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    name: {
+      type: String,
+      required: true,
     },
-    properties: [
+    description: {
+      type: String,
+    },
+    location: { type: "Object", default: {} },
+    createdAt: {
+      type: Number,
+      default: () => moment().valueOf(),
+    },
+    updatedAt: {
+      type: Number,
+    },
+    brokers: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Property",
+        ref: "Broker",
+      },
+    ],
+    landlords: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Landlord",
       },
     ],
   },
@@ -22,15 +39,15 @@ propertySchema.pre("save", function (next) {
   next();
 });
 
-// Apply population to 'userId' and 'properties' when querying
+// Apply population to 'landlords' and 'brokers' when querying
 propertySchema.pre("find", function (next) {
   this.populate({
-    path: "user",
+    path: "brokers",
     select: "firstName lastName profilePicture email username",
   });
 
   this.populate({
-    path: "properties",
+    path: "landlords",
     select: "name description location",
   });
   next();
