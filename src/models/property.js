@@ -3,31 +3,14 @@ const moment = require("moment");
 
 const propertySchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     },
-    description: {
-      type: String,
-    },
-    location: { type: "Object", default: {} },
-    createdAt: {
-      type: Number,
-      default: () => moment().valueOf(),
-    },
-    updatedAt: {
-      type: Number,
-    },
-    brokers: [
+    properties: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Broker",
-      },
-    ],
-    landlords: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Landlord",
+        ref: "Property",
       },
     ],
   },

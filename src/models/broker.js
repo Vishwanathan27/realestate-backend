@@ -1,17 +1,20 @@
 const mongoose = require("mongoose");
 
-const brokerSchema = new mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  properties: [
-    {
+const brokerSchema = new mongoose.Schema(
+  {
+    user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Property",
+      ref: "User",
     },
-  ],
-});
+    properties: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Property",
+      },
+    ],
+  },
+  { versionKey: false }
+);
 
 // Apply population to 'userId' and 'properties' when querying
 brokerSchema.pre("find", function (next) {
