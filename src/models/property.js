@@ -21,13 +21,13 @@ const propertySchema = new mongoose.Schema(
     brokers: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Broker",
+        ref: "User",
       },
     ],
     landlords: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Landlord",
+        ref: "User",
       },
     ],
   },
