@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 const { propertyService } = require("@services");
 const { dataConfig } = require("@config");
 
@@ -86,10 +87,41 @@ const getAllProperties = async (req, res) => {
   return res.status(200).send({ success: true, properties });
 };
 
+const provideUnitsToUser = async (req, res) => {
+  const {
+    body: { sqFt },
+    params: { id },
+  } = req;
+
+  const { property, error: propertyError } =
+    await propertyService.getPropertyById(id);
+
+  if (propertyError) {
+    return res.status(500).send({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+
+  const { selectedUnits, error } = await propertyService.provideUnitsToUser(
+    property,
+    sqFt
+  );
+
+  if (error) {
+    return res.status(500).send({
+      success: false,
+      error: "Internal Server Error",
+    });
+  }
+  return res.status(200).send({ success: true, selectedUnits });
+};
+
 module.exports = {
   getAllProperties,
   getPropertyById,
   createProperty,
   updateProperty,
   deleteProperty,
+  provideUnitsToUser,
 };

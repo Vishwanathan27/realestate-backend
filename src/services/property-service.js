@@ -1,3 +1,5 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable no-param-reassign */
 const { Property } = require("@models");
 
 module.exports = {
@@ -59,6 +61,53 @@ module.exports = {
         .limit(limit)
         .sort(sort);
       return { properties };
+    } catch (error) {
+      console.log(error);
+      return { error };
+    }
+  },
+  async provideUnitsToUser(property, sqFt) {
+    try {
+      const { units } = property;
+
+      const matchingUnits = units.filter((unit) => unit.squareFeet <= sqFt);
+
+      if (matchingUnits.length === 0) {
+        return [];
+      }
+
+      matchingUnits.sort((a, b) => {
+        // First, sort by plotNumber in ascending order
+        if (a.plotNumber < b.plotNumber) return -1;
+        if (a.plotNumber > b.plotNumber) return 1;
+        // If plotNumbers are the same, sort by floor in ascending order
+        if (a.plotNumber === b.plotNumber) {
+          if (a.floor < b.floor) return -1;
+          if (a.floor > b.floor) return 1;
+        }
+        return 0;
+      });
+
+      const { selUnits: selectedUnits, totalSqFeet: totalSquareFeet } =
+        matchingUnits.reduce(
+          ({ selUnits, totalSqFeet }, unit) => {
+            if (totalSqFeet + unit.squareFeet <= sqFt) {
+              selUnits.push(unit);
+              totalSqFeet += unit.squareFeet;
+            }
+            return { selUnits, totalSqFeet };
+          },
+          { selUnits: [], totalSqFeet: 0 }
+        );
+
+      if (
+        selectedUnits.reduce((total, unit) => total + unit.squareFeet, 0) ===
+        sqFt
+      ) {
+        return { selectedUnits };
+      }
+
+      return [];
     } catch (error) {
       console.log(error);
       return { error };
